@@ -23,7 +23,7 @@ from xml.dom.minidom import parse
 
 # read all the settings from the ini file
 Config = ConfigParser.ConfigParser()
-Config.read("config.ini")
+Config.read("config.ini")    # might want to make this a literal path if your running from a crontab
 
 rsslist = Config.get("Main", "rsslist")
 savepath = Config.get("Main", "savepath")
@@ -38,7 +38,7 @@ for rssline in flist:                       # step through the list
     
     print "Checking " + rssline[0]
 
-    dom = parse(rssline[1])    # get the rss feed
+    dom = parse(urllib.urlopen(rssline[1]))    # download the rss list
     
     listoffile = ""                                 # reset list of files
     

@@ -1,2 +1,2 @@
-TWiT,http://feeds.twit.tv/twit_video_small
-NSWF,http://feeds.twit.tv/nsfw_video_small
+TWiT,http://feeds.twit.tv/twit_video_small,5
+NSWF,http://feeds.twit.tv/nsfw_video_small,5

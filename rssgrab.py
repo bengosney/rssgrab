@@ -19,7 +19,7 @@
 import urllib
 import os
 import ConfigParser
-from xml.dom.minidom import parse
+from xml.dom.minidom import *
 
 # read all the settings from the ini file
 Config = ConfigParser.ConfigParser()
@@ -41,20 +41,25 @@ for rssline in flist:                       # step through the list
 
     dom = parse(urllib.urlopen(rssline[1])) # download the rssfeed
 
-    listoffile = ""                                 # reset list of files
+    listoffile = ""                         # reset list of files
     
     dlcount = 0    # reset download count for this podcast
 
-    for node in dom.getElementsByTagName('enclosure'):                                 # step through the rss feed
-        fn = node.getAttribute('url')
-        fullpath = savepath + rssline[0] + "/" + os.path.basename(fn)   # make the full path for easy of reading
+    for node in dom.getElementsByTagName('item'):                                 # step through the rss feed
+        pTitle = node.getElementsByTagName('title').item(0).childNodes.item(0).nodeValue    # get title, in a really nasty looking way
+
+        pUrl = node.getElementsByTagName('enclosure').item(0).getAttribute('url')   # get the url
+
+        pName = pTitle + os.path.splitext(pUrl)[1]    # Make file name
+
+        fullpath = savepath + rssline[0] + "/" + pName   # make the full path for easy of reading
         
-        listoffile = listoffile + "," + os.path.basename(fn)    # build a string of the file names to check deleting old podcasts
+        listoffile = listoffile + "," + pName    # build a string of the file names to check deleting old podcasts
         
         if not os.path.exists(fullpath): # make sure we don't already have the file
-            print "Downloading " + fn
+            print "Downloading " + pName
             
-            podcast = urllib.urlopen(fn)        # get the video file
+            podcast = urllib.urlopen(pUrl)        # get the video file
             
             fout = file(fullpath,'w')           # open the output file
             fout.write(podcast.read())          # write the file

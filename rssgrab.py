@@ -31,7 +31,10 @@ savepath = Config.get("Main", "savepath")
 flist = file(rsslist)                       # load the rss feed list
 
 for rssline in flist:                       # step through the list
-    rssline = rssline.rstrip().split(',')   # slip the name and the url
+    if rssline[0] == '#':                   # allow for comments in the rss list
+        continue
+
+    rssline = rssline.rstrip().split(',')   # split the name and the url
     
     if not os.path.exists(savepath + rssline[0]):      # make the sub directory
         # if it doesn't exist
@@ -47,11 +50,9 @@ for rssline in flist:                       # step through the list
 
     for node in dom.getElementsByTagName('item'):                                 # step through the rss feed
         pTitle = node.getElementsByTagName('title').item(0).childNodes.item(0).nodeValue    # get title, in a really nasty looking way
-
         pUrl = node.getElementsByTagName('enclosure').item(0).getAttribute('url')   # get the url
 
         pName = pTitle + os.path.splitext(pUrl)[1]    # Make file name
-
         fullpath = savepath + rssline[0] + "/" + pName   # make the full path for easy of reading
         
         listoffile = listoffile + "," + pName    # build a string of the file names to check deleting old podcasts

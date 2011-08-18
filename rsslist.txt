@@ -1,2 +1,9 @@
-TWiT,http://feeds.twit.tv/twit_video_small
-NSWF,http://feeds.twit.tv/nsfw_video_small
+LifeHacker,http://revision3.com/lifehacker/feed/MP4-hd30,3
+TBHS,http://revision3.com/tbhs/feed/MP4-hd30,3
+TWiT,http://feeds.twit.tv/twit_video_large,3
+NSWF,http://feeds.twit.tv/nsfw_video_large,3
+TBHS,http://revision3.com/tbhs/feed/MP4-hd30,3
+ScamSchool,http://revision3.com/scamschool/feed/MP4-hd30,3
+Tekzilla,http://revision3.com/tekzilla/feed/MP4-hd30?subshow=false,3
+Hak5,http://revision3.com/hak5/feed/MP4-hd30?subshow=false,3
+#LifeHacker,http://revision3.com/lifehacker/feed/MP4-hd30,3

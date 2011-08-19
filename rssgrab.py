@@ -23,7 +23,7 @@ from xml.dom.minidom import *
 
 # read all the settings from the ini file
 Config = ConfigParser.ConfigParser()
-ConfigPath = os.path.dirname(os.path.abspath(__file__)) + "/config.ini"
+ConfigPath = os.path.dirname(os.path.abspath(__file__)) + "/config.ini"    # make sure the config path is correct
 Config.read(ConfigPath)
 
 rsslist = Config.get("Main", "rsslist")
@@ -52,13 +52,20 @@ for rssline in flist:                       # step through the list
     for node in dom.getElementsByTagName('item'):                                 # step through the rss feed
         pTitle = node.getElementsByTagName('title').item(0).childNodes.item(0).nodeValue    # get title, in a really nasty looking way
         pUrl = node.getElementsByTagName('enclosure').item(0).getAttribute('url')   # get the url
+        pSize = node.getElementsByTagName('enclosure').item(0).getAttribute('length')   # get the size for later
 
         pName = pTitle + os.path.splitext(pUrl)[1]    # Make file name
         fullpath = savepath + rssline[0] + "/" + pName   # make the full path for easy of reading
         
         listoffile = listoffile + "," + pName    # build a string of the file names to check deleting old podcasts
-        
-        if not os.path.exists(fullpath): # make sure we don't already have the file
+
+        # Try to get the file size
+        try:
+            fSize = os.path.getsize(fullpath)    # if it can't find the file it throws an exception
+        except:    # catch the exception...
+            fSize = 0    # set the size to zero
+
+        if fSize != pSize:    # if the file doesn't excist or is the wrong size, go get it!
             print "Downloading " + pName
             
             podcast = urllib.urlopen(pUrl)        # get the video file
@@ -69,7 +76,7 @@ for rssline in flist:                       # step through the list
     
             print "Downloaded"      
 
-        # Limit the downloaded files
+        # limit the downloaded files
         dlcount = dlcount + 1    # incrament the downloaded count
         print "Downloaded: " + str(dlcount) + " of " + str(rssline[2])    # Print the count
         if dlcount == int(rssline[2]):    # Break if you've reached the download the limit

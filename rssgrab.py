@@ -23,7 +23,8 @@ from xml.dom.minidom import *
 
 # read all the settings from the ini file
 Config = ConfigParser.ConfigParser()
-Config.read("config.ini")
+ConfigPath = os.path.dirname(os.path.abspath(__file__)) + "/config.ini"
+Config.read(ConfigPath)
 
 rsslist = Config.get("Main", "rsslist")
 savepath = Config.get("Main", "savepath")

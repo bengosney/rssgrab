@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib
+import urllib2
 import os
 import ConfigParser
 from xml.dom.minidom import *
@@ -38,12 +38,14 @@ for rssline in flist:                       # step through the list
     rssline = rssline.rstrip().split(',')   # split the name and the url
     
     if not os.path.exists(savepath + rssline[0]):      # make the sub directory
-        # if it doesn't exist
-        os.makedirs(savepath + rssline[0])
+        os.makedirs(savepath + rssline[0])    # if it doesn't exist
     
     print "Checking " + rssline[0]
 
-    dom = parse(urllib.urlopen(rssline[1])) # download the rssfeed
+    try:
+        dom = parse(urllib2.urlopen(rssline[1])) # download the rssfeed
+    except:
+        continue
 
     listoffile = ""                         # reset list of files
     
@@ -53,6 +55,7 @@ for rssline in flist:                       # step through the list
         pTitle = node.getElementsByTagName('title').item(0).childNodes.item(0).nodeValue    # get title, in a really nasty looking way
         pUrl = node.getElementsByTagName('enclosure').item(0).getAttribute('url')   # get the url
         pSize = node.getElementsByTagName('enclosure').item(0).getAttribute('length')   # get the size for later
+        
 
         pName = pTitle + os.path.splitext(pUrl)[1]    # Make file name
         fullpath = savepath + rssline[0] + "/" + pName   # make the full path for easy of reading
@@ -65,20 +68,27 @@ for rssline in flist:                       # step through the list
         except:    # catch the exception...
             fSize = 0    # set the size to zero
 
-        if fSize != pSize:    # if the file doesn't excist or is the wrong size, go get it!
+        print pName
+        
+        if int(fSize) != int(pSize):    # if the file doesn't excist or is the wrong size, go get it!
             print "Downloading " + pName
             
-            podcast = urllib.urlopen(pUrl)        # get the video file
+            podcast = urllib2.urlopen(pUrl)        # get the video file
             
-            fout = file(fullpath,'w')           # open the output file
-            fout.write(podcast.read())          # write the file
-            fout.close()
-    
+            try:
+                fout = file(fullpath,'w')           # open the output file
+                # read and write "line" by "line"
+                for chunk in podcast:
+                    fout.write(chunk)
+                fout.close()
+            except:
+                print "failed to download and save"
+              
             print "Downloaded"      
 
         # limit the downloaded files
         dlcount = dlcount + 1    # incrament the downloaded count
-        print "Downloaded: " + str(dlcount) + " of " + str(rssline[2])    # Print the count
+        #print "Downloaded: " + str(dlcount) + " of " + str(rssline[2])    # Print the count
         if dlcount == int(rssline[2]):    # Break if you've reached the download the limit
             break
 

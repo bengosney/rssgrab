@@ -23,16 +23,20 @@ from xml.dom.minidom import *
 
 
 class rssGrab :
-	def grabVideo(self) :
+	Config = ConfigParser.ConfigParser()
+
+	def loadConfig(self):
 		# read all the settings from the ini file
-		Config = ConfigParser.ConfigParser()
 		ConfigPath = os.path.dirname(os.path.abspath(__file__)) + "/config.ini"    # make sure the config path is correct
-		Config.read(ConfigPath)
+		self.Config.read(ConfigPath)
 
-		rsslist = Config.get("Main", "rsslist")
-		savepath = Config.get("Main", "savepath")
+		rsslist = self.Config.get("Main", "rsslist")
+		savepath = self.Config.get("Main", "savepath")
 
-		flist = file(rsslist)                       # load the rss feed list
+	def grabVideo(self):
+		self.loadConfig()
+		
+		flist = file(self.rsslist)                       # load the rss feed list
 
 		for rssline in flist:                       # step through the list
 		    if rssline[0] == '#':                   # allow for comments in the rss list

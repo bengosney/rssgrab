@@ -1,13 +1,13 @@
-Tom's Top 5,http://revision3.com/tomstop5/feed/MP4-hd30,5
-LifeHacker,http://revision3.com/lifehacker/feed/MP4-hd30,5
-TBHS,http://revision3.com/tbhs/feed/MP4-hd30,5
-TWiT,http://feeds.twit.tv/twit_video_large,3
-NSWF,http://feeds.twit.tv/nsfw_video_large,3
-ScamSchool,http://revision3.com/scamschool/feed/MP4-hd30,5
-Tekzilla,http://revision3.com/tekzilla/feed/MP4-hd30?subshow=false,3
-Hak5,http://revision3.com/hak5/feed/MP4-hd30?subshow=false,3
-GizWiz,http://feeds.twit.tv/dgw_video_large,3
-FrameRate,http://feeds.twit.tv/fr_video_large,3
-Security Now,http://feeds.twit.tv/sn_video_large,2
-Ham Nation,http://feeds.twit.tv/hn_video_large,3
-TWiT Specials,http://feeds.twit.tv/specials_video_large,5
+Tom's Top 5,http://revision3.com/tomstop5/feed/MP4-hd30,3
+#LifeHacker,http://revision3.com/lifehacker/feed/MP4-hd30,5
+#TBHS,http://revision3.com/tbhs/feed/MP4-hd30,5
+#TWiT,http://feeds.twit.tv/twit_video_large,3
+#NSWF,http://feeds.twit.tv/nsfw_video_large,3
+#ScamSchool,http://revision3.com/scamschool/feed/MP4-hd30,5
+#Tekzilla,http://revision3.com/tekzilla/feed/MP4-hd30?subshow=false,3
+#Hak5,http://revision3.com/hak5/feed/MP4-hd30?subshow=false,3
+#GizWiz,http://feeds.twit.tv/dgw_video_large,3
+#FrameRate,http://feeds.twit.tv/fr_video_large,3
+#Security Now,http://feeds.twit.tv/sn_video_large,2
+#Ham Nation,http://feeds.twit.tv/hn_video_large,3
+#TWiT Specials,http://feeds.twit.tv/specials_video_large,5

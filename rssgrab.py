@@ -53,10 +53,19 @@ for rssline in flist:                       # step through the list
 
     for node in dom.getElementsByTagName('item'):                                 # step through the rss feed
         pTitle = node.getElementsByTagName('title').item(0).childNodes.item(0).nodeValue    # get title, in a really nasty looking way
-        pUrl = node.getElementsByTagName('enclosure').item(0).getAttribute('url')   # get the url
-        pSize = node.getElementsByTagName('enclosure').item(0).getAttribute('length')   # get the size for later
-        
+        pUrl = node.getElementsByTagName('link').item(0).childNodes.item(0).nodeValue # get the url
 
+        if node.getElementsByTagName('enclosure').length > 0:
+            pSize = node.getElementsByTagName('enclosure').item(0).getAttribute('length')
+        else:
+            fileHeaders = urllib2.urlopen(pUrl).headers # get the file headers
+        
+            # see if the server has given us a file size
+            if "Content-Length" in fileHeaders:
+                pSize = int (fileHeaders.headers["Content-Length"])
+            else:
+                pSize = -1 # if there's no size, set it to a negative number to make sure we download the file in a min
+        
         pName = pTitle + os.path.splitext(pUrl)[1]    # Make file name
         fullpath = savepath + rssline[0] + "/" + pName   # make the full path for easy of reading
         
@@ -70,7 +79,7 @@ for rssline in flist:                       # step through the list
 
         print pName
         
-        if int(fSize) != int(pSize):    # if the file doesn't excist or is the wrong size, go get it!
+        if int(fSize) < int(pSize):    # if the file doesn't excist or is too small, go get it!
             print "Downloading " + pName
             
             podcast = urllib2.urlopen(pUrl)        # get the video file

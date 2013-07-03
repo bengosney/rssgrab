@@ -23,6 +23,9 @@ from xml.dom.minidom import *
 
 
 class rssGrab :
+	feeds = []
+	rssList = ''
+	
 	Config = ConfigParser.ConfigParser()
 
 	def loadConfig(self):
@@ -30,8 +33,20 @@ class rssGrab :
 		ConfigPath = os.path.dirname(os.path.abspath(__file__)) + "/config.ini"    # make sure the config path is correct
 		self.Config.read(ConfigPath)
 
-		rsslist = self.Config.get("Main", "rsslist")
-		savepath = self.Config.get("Main", "savepath")
+		self.rssList = self.Config.get("Main", "rsslist")
+		self.savePath = self.Config.get("Main", "savepath")
+
+	def loadList(self, fileName):
+		flist = file(fileName)
+
+		for line in flist:
+			if line[0] == '#':
+				continue
+			
+			self.feeds.append(line.rstrip().split(','))
+
+	#def downloadFeed(self, url, savePath, 
+
 
 	def grabVideo(self):
 		self.loadConfig()
@@ -116,4 +131,7 @@ class rssGrab :
 
 if __name__ == "__main__":
 	rss = rssGrab()
-	rss.grabVideo()
+	rss.loadConfig()
+	rss.loadList(rss.rssList)
+	print rss.feeds
+	#rss.grabVideo()

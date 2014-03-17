@@ -15,9 +15,9 @@ Ben Gosney
 
 (now for all the socal media stuff)
 
-www.flaminghedgehog.co.uk
-@00dog on twitter and identi.ca
 bengosney@googlemail.com
+
+@00dog on twitter
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/bengosney/rssgrab/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

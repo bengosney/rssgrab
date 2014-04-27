@@ -23,7 +23,8 @@ from xml.dom.minidom import *
 
 # read all the settings from the ini file
 Config = ConfigParser.ConfigParser()
-ConfigPath = os.path.dirname(os.path.abspath(__file__)) + "/config.ini"    # make sure the config path is correct
+# make sure the config path is correct
+ConfigPath = os.path.dirname(os.path.abspath(__file__)) + "/config.ini"
 Config.read(ConfigPath)
 
 rsslist = Config.get("Main", "rsslist")
@@ -32,85 +33,102 @@ savepath = Config.get("Main", "savepath")
 flist = file(rsslist)                       # load the rss feed list
 
 for rssline in flist:                       # step through the list
-    if rssline[0] == '#':                   # allow for comments in the rss list
+    # allow for comments in the rss list
+    if rssline[0] == '#':
         continue
 
     rssline = rssline.rstrip().split(',')   # split the name and the url
-    
+
     if not os.path.exists(savepath + rssline[0]):      # make the sub directory
         os.makedirs(savepath + rssline[0])    # if it doesn't exist
-    
+
     print "Checking " + rssline[0]
 
     try:
-        dom = parse(urllib2.urlopen(rssline[1])) # download the rssfeed
+        dom = parse(urllib2.urlopen(rssline[1]))  # download the rssfeed
     except:
         continue
 
     listoffile = ""                         # reset list of files
-    
+
     dlcount = 0    # reset download count for this podcast
 
-    for node in dom.getElementsByTagName('item'):                                 # step through the rss feed
-        pTitle = node.getElementsByTagName('title').item(0).childNodes.item(0).nodeValue    # get title, in a really nasty looking way
-        pUrl = node.getElementsByTagName('link').item(0).childNodes.item(0).nodeValue # get the url
+    # step through the rss feed
+    for node in dom.getElementsByTagName('item'):
+        tmpNode = node.getElementsByTagName('title').item(0).childNodes.item(0)
+        # get title, in a really nasty looking way
+        pTitle = tmpNode.nodeValue
+        tmpNode = node.getElementsByTagName('link').item(0).childNodes.item(0)
+        pUrl = tmpNode.nodeValue  # get the url
 
         if node.getElementsByTagName('enclosure').length > 0:
-            pSize = node.getElementsByTagName('enclosure').item(0).getAttribute('length')
+            tmpNode = node.getElementsByTagName('enclosure').item(0)
+            pSize = tmpNode.getAttribute('length')
         else:
-            fileHeaders = urllib2.urlopen(pUrl).headers # get the file headers
-        
+            fileHeaders = urllib2.urlopen(pUrl).headers  # get the file headers
+
             # see if the server has given us a file size
             if "Content-Length" in fileHeaders:
-                pSize = int (fileHeaders.headers["Content-Length"])
+                pSize = int(fileHeaders.headers["Content-Length"])
             else:
-                pSize = -1 # if there's no size, set it to a negative number to make sure we download the file in a min
-        
-        pName = pTitle + os.path.splitext(pUrl)[1]    # Make file name
-        fullpath = savepath + rssline[0] + "/" + pName   # make the full path for easy of reading
-        
-        listoffile = listoffile + "," + pName    # build a string of the file names to check deleting old podcasts
+                # if there's no size, set it to a negative number to make sure
+                # we download the file in a min
+                pSize = -1
+
+        # Make file name
+        pName = pTitle + os.path.splitext(pUrl)[1]
+        # make the full path for easy of reading
+        fullpath = savepath + rssline[0] + "/" + pName
+
+        # build a string of the file names to check deleting old podcasts
+        listoffile = listoffile + "," + pName
 
         # Try to get the file size
         try:
-            fSize = os.path.getsize(fullpath)    # if it can't find the file it throws an exception
+            # if it can't find the file it throws an exception
+            fSize = os.path.getsize(fullpath)
         except:    # catch the exception...
             fSize = 0    # set the size to zero
 
         print pName
-        
-        if int(fSize) < int(pSize):    # if the file doesn't excist or is too small, go get it!
+
+        # if the file doesn't excist or is too small, go get it!
+        if int(fSize) < int(pSize):
             print "Downloading " + pName
-            
+
             podcast = urllib2.urlopen(pUrl)        # get the video file
-            
+
             try:
-                fout = file(fullpath,'w')           # open the output file
+                fout = file(fullpath, 'w')           # open the output file
                 # read and write "line" by "line"
                 for chunk in podcast:
                     fout.write(chunk)
+                    print '.'
+
                 fout.close()
             except:
                 print "failed to download and save"
-              
-            print "Downloaded"      
+
+            print "Downloaded"
 
         # limit the downloaded files
         dlcount = dlcount + 1    # incrament the downloaded count
-        #print "Downloaded: " + str(dlcount) + " of " + str(rssline[2])    # Print the count
-        if dlcount == int(rssline[2]):    # Break if you've reached the download the limit
+        # Break if you've reached the download the limit
+        if dlcount == int(rssline[2]):
             break
 
-
     print "Cleaning up old podcasts"
-    
-    for root, dir, files in os.walk(savepath + rssline[0] + "/"):   # walk the podcast directory
+
+    # walk the podcast directory
+    for root, dir, files in os.walk(savepath + rssline[0] + "/"):
         for tmp in files:
-            if (listoffile.find(tmp) < 0):                          # check to see if we want the podcast or not
+            # check to see if we want the podcast or not
+            if (listoffile.find(tmp) < 0):
                 print "removing " + tmp
-                os.remove(savepath + rssline[0] + "/" + tmp)        # delete file if we don't want it
-                                                   
-    print rssline[0] + " is upto date" # close up and "stuff"
-        
+                # delete file if we don't want it
+                os.remove(savepath + rssline[0] + "/" + tmp)
+
+    print rssline[0] + " is upto date"  # close up and "stuff"
+
 flist.close()
 print "All Downloaded"

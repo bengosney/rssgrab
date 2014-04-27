@@ -63,6 +63,7 @@ for rssline in flist:                       # step through the list
 
         if node.getElementsByTagName('enclosure').length > 0:
             tmpNode = node.getElementsByTagName('enclosure').item(0)
+            pUrl = tmpNode.getAttribute('url')
             pSize = tmpNode.getAttribute('length')
         else:
             fileHeaders = urllib2.urlopen(pUrl).headers  # get the file headers
@@ -95,21 +96,21 @@ for rssline in flist:                       # step through the list
         # if the file doesn't excist or is too small, go get it!
         if int(fSize) < int(pSize):
             print "Downloading " + pName
+            exit
 
             podcast = urllib2.urlopen(pUrl)        # get the video file
+            CHUNK_SIZE = 16 * 1024
 
             try:
-                fout = file(fullpath, 'w')           # open the output file
-                # read and write "line" by "line"
-                for chunk in podcast:
-                    fout.write(chunk)
-                    print '.'
-
-                fout.close()
+                with open(fullpath, 'w') as fout:
+                    while True:
+                        chunk = podcast.read(CHUNK_SIZE)
+                        if not chunk: break
+                        fout.write(chunk)
+                        
+                print "Downloaded"
             except:
                 print "failed to download and save"
-
-            print "Downloaded"
 
         # limit the downloaded files
         dlcount = dlcount + 1    # incrament the downloaded count

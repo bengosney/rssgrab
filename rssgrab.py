@@ -96,7 +96,6 @@ for rssline in flist:                       # step through the list
         # if the file doesn't excist or is too small, go get it!
         if int(fSize) < int(pSize):
             print "Downloading " + pName
-            exit
 
             podcast = urllib2.urlopen(pUrl)        # get the video file
             CHUNK_SIZE = 16 * 1024
